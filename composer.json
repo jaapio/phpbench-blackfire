@@ -1,0 +1,16 @@
+{
+    "name": "jaapio/phpbench-blackfire",
+    "description": "Blackfire executor for phpbench",
+    "type": "library",
+    "require": {
+        "phpbench/phpbench": "^0.17.0",
+        "blackfire/php-sdk": "^1.21"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jaapio",
+            "email": "account@ijaap.nl"
+        }
+    ]
+}
