@@ -6,6 +6,11 @@
         "phpbench/phpbench": "^0.17.0",
         "blackfire/php-sdk": "^1.21"
     },
+    "autoload": {
+        "psr-4": {
+            "Jaapio\\Blackfire\\" : "src"
+        }
+    },
     "license": "MIT",
     "authors": [
         {

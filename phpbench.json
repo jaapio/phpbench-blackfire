@@ -1,0 +1,8 @@
+{
+  "bootstrap": "vendor/autoload.php",
+  "path": "bench",
+  "extensions": [
+    "Jaapio\\Blackfire\\Extension"
+  ],
+  "extension_autoloader": "/app/vendor/autoload.php"
+}

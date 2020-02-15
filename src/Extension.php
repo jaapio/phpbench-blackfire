@@ -23,6 +23,15 @@ final class Extension implements ExtensionInterface
             },
             ['benchmark_executor' => ['name' => 'blackfire']]
         );
+
+        $container->mergeParameter(
+            'executors',
+            [
+                'blackfire' => [
+                     'executor' => 'blackfire',
+                ],
+            ]
+        );
     }
 
     /**
