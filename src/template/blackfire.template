@@ -13,6 +13,8 @@ $afterMethods = {{ afterMethods }};
 $bootstrap = '{{ bootstrap }}';
 $parameters = {{ parameters }};
 $warmup = {{ warmup }};
+$scenarioStr = '{{ scenario }}';
+$blackfireConfig = '{{ blackfire_config }}';
 
 if ($bootstrap) {
     call_user_func(function () use ($bootstrap) {
@@ -20,7 +22,13 @@ if ($bootstrap) {
     });
 }
 
+/** @var \Blackfire\Build\Scenario $scenario */
+$scenario = unserialize($scenarioStr);
+$clientConfig = unserialize($blackfireConfig);
+
 require_once($file);
+
+
 
 $benchmark = new $class();
 
@@ -35,10 +43,12 @@ if ($warmup) {
     }
 }
 
-$blackfire = new \Blackfire\Client();
+$blackfire = new \Blackfire\Client($clientConfig);
 $config = new \Blackfire\Profile\Configuration();
 $config->setTitle($class . '::{{ subject }}');
 $config->setSamples({{ revolutions }});
+$config->setScenario($scenario);
+
 $probe = $blackfire->createProbe($config, false);
 
 $time = benchmark($benchmark, $parameters, $probe);
