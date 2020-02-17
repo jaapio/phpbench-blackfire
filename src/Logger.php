@@ -17,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Logger implements LoggerInterface
 {
-
     /**
      * @var Client
      */
@@ -37,11 +36,6 @@ class Logger implements LoggerInterface
      * @var LoggerInterface
      */
     private $innerLogger;
-
-    /**
-     * @var string
-     */
-    private $blackfireEnv;
 
     public function __construct(LoggerInterface $innerLogger, ClientConfiguration $clientConfiguration)
     {
@@ -140,7 +134,7 @@ class Logger implements LoggerInterface
      */
     public function startSuite(Suite $suite)
     {
-        $this->build = $this->blackfire->startBuild(null, ['title' => 'logger']);
+        $this->build = $this->blackfire->startBuild(null, ['title' => (string) $suite->getTag()]);
         $this->innerLogger->startSuite($suite);
     }
 

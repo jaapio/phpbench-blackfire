@@ -44,16 +44,19 @@ final class Executor extends TemplateExecutor
 
     public function execute(SubjectMetadata $subjectMetadata, Iteration $iteration, Config $config): void
     {
-        $assertions = array_map(
-            static function ($assert) {
-                if (is_array($assert)) {
-                    return $assert;
-                }
+        $assertions = [];
+        if (isset($config['assertions'])) {
+            $assertions = array_map(
+                static function ($assert) {
+                    if (is_array($assert)) {
+                        return $assert;
+                    }
 
-                return ['expression' => $assert];
-            },
-            $config['assertions']
-        );
+                    return ['expression' => $assert];
+                },
+                $config['assertions']
+            );
+        }
 
         $tokens = [
             'class' => $subjectMetadata->getBenchmark()->getClass(),

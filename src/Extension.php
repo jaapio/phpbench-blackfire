@@ -56,15 +56,6 @@ final class Extension implements ExtensionInterface
 
             return $clientConfig;
         });
-
-        $container->mergeParameter(
-            'executors',
-            [
-                'blackfire' => [
-                     'executor' => 'blackfire',
-                ],
-            ]
-        );
     }
 
     /**

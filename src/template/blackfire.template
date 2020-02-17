@@ -48,7 +48,9 @@ $blackfire = new \Blackfire\Client($clientConfig);
 $config = new \Blackfire\Profile\Configuration();
 $config->setTitle($class . '::{{ subject }}');
 $config->setSamples({{ revolutions }});
-$config->setScenario($scenario);
+if ($scenario !== null) {
+    $config->setScenario($scenario);
+}
 
 if (is_array($assertions)) {
 
