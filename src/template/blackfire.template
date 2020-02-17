@@ -15,6 +15,7 @@ $parameters = {{ parameters }};
 $warmup = {{ warmup }};
 $scenarioStr = '{{ scenario }}';
 $blackfireConfig = '{{ blackfire_config }}';
+$assertions = json_decode(' {{ assertions }} ', true);
 
 if ($bootstrap) {
     call_user_func(function () use ($bootstrap) {
@@ -48,6 +49,13 @@ $config = new \Blackfire\Profile\Configuration();
 $config->setTitle($class . '::{{ subject }}');
 $config->setSamples({{ revolutions }});
 $config->setScenario($scenario);
+
+if (is_array($assertions)) {
+
+    foreach ($assertions as $assertion) {
+        $config->assert($assertion['expression'], $assertion['title']);
+    }
+}
 
 $probe = $blackfire->createProbe($config, false);
 

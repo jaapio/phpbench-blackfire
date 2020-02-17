@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jaapio\Blackfire;
 
 use Blackfire\ClientConfiguration;
+use PhpBench\Benchmark\Metadata\AssertionMetadata;
 use PhpBench\Benchmark\Metadata\SubjectMetadata;
 use PhpBench\Benchmark\Remote\Launcher;
 use PhpBench\Benchmark\Remote\Payload;
@@ -13,6 +14,7 @@ use PhpBench\Model\Iteration;
 use PhpBench\Model\Result\MemoryResult;
 use PhpBench\Model\Result\TimeResult;
 use PhpBench\Registry\Config;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class Executor extends TemplateExecutor
 {
@@ -42,6 +44,17 @@ final class Executor extends TemplateExecutor
 
     public function execute(SubjectMetadata $subjectMetadata, Iteration $iteration, Config $config): void
     {
+        $assertions = array_map(
+            static function ($assert) {
+                if (is_array($assert)) {
+                    return $assert;
+                }
+
+                return ['expression' => $assert];
+            },
+            $config['assertions']
+        );
+
         $tokens = [
             'class' => $subjectMetadata->getBenchmark()->getClass(),
             'file' => $subjectMetadata->getBenchmark()->getPath(),
@@ -52,7 +65,8 @@ final class Executor extends TemplateExecutor
             'parameters' => var_export($iteration->getVariant()->getParameterSet()->getArrayCopy(), true),
             'warmup' => $iteration->getVariant()->getWarmup() ?: 0,
             'scenario' => serialize($this->logger->getScenario()),
-            'blackfire_config' => serialize($this->clientConfiguration)
+            'blackfire_config' => serialize($this->clientConfiguration),
+            'assertions' => json_encode($assertions),
         ];
 
         $payload = $this->launcher->payload(self::TEMPLATE, $tokens);
@@ -80,4 +94,14 @@ final class Executor extends TemplateExecutor
         $iteration->setResult(new TimeResult($result['time']));
         $iteration->setResult(MemoryResult::fromArray($result['mem']));
     }
+
+    public function configure(OptionsResolver $options)
+    {
+        $options->setDefaults([
+            'assertions' => [
+            ]
+        ]);
+    }
+
+
 }
