@@ -17,6 +17,8 @@ $scenarioStr = '{{ scenario }}';
 $blackfireConfig = '{{ blackfire_config }}';
 $assertions = json_decode(' {{ assertions }} ', true);
 
+require_once '{{ blackfire_autoload }}';
+
 if ($bootstrap) {
     call_user_func(function () use ($bootstrap) {
         require_once($bootstrap);

@@ -69,6 +69,7 @@ final class Executor extends TemplateExecutor
             'warmup' => $iteration->getVariant()->getWarmup() ?: 0,
             'scenario' => serialize($this->logger->getScenario()),
             'blackfire_config' => serialize($this->clientConfiguration),
+            'blackfire_autoload' => __DIR__ . 'autoload.php',
             'assertions' => json_encode($assertions),
         ];
 

@@ -17,5 +17,10 @@
             "name": "jaapio",
             "email": "account@ijaap.nl"
         }
-    ]
+    ],
+    "scripts": {
+        "post-autoload-dump": [
+            "Jaapio\\Blackfire\\Installer::dumpAutoload"
+        ]
+    }
 }
