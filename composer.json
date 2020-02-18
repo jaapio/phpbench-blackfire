@@ -19,8 +19,7 @@
         }
     ],
     "scripts": {
-        "post-autoload-dump": [
-            "Jaapio\\Blackfire\\Installer::dumpAutoload"
-        ]
+        "post-update-cmd":  "Jaapio\\Blackfire\\Installer::dumpAutoload",
+        "post-install-cmd": "Jaapio\\Blackfire\\Installer::dumpAutoload"
     }
 }
