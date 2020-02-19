@@ -51,7 +51,7 @@ FILEHEAD;
 
         /** @var SplFileInfo $file */
         foreach ($iterator as $file) {
-            if ($file->isFile()) {
+            if ($file->isFile() && strpos($file->getPath(), 'Bridge') === false) {
                 fwrite($autoloadFile, "require_once '" . realpath($file->getPathname()) . "';" . PHP_EOL);
             }
         }
