@@ -19,6 +19,12 @@
             "email": "account@ijaap.nl"
         }
     ],
+    "extra": {
+        "class" : "Jaapio\\Blackfire\\Installer",
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
     "scripts": {
         "post-update-cmd":  "Jaapio\\Blackfire\\Installer::dumpAutoload",
         "post-install-cmd": "Jaapio\\Blackfire\\Installer::dumpAutoload"
