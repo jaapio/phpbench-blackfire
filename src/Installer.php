@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Jaapio\Blackfire;
 
+use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\IO\IOInterface;
+use Composer\Plugin\PluginInterface;
+use Composer\Script\Event;
+use Composer\Script\ScriptEvents;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 
-class Installer
+class Installer implements PluginInterface, EventSubscriberInterface
 {
 
-    public static function dumpAutoload()
+    public static function dumpAutoload(Event $composerEvent)
     {
         $autoloadFile = fopen(__DIR__ . '/../src/autoload.php', 'wb+');
 
@@ -25,11 +31,11 @@ class Installer
 
 FILEHEAD;
 
-
+        $vendorDir = $composerEvent->getComposer()->getConfig()->get('vendor-dir');
         fwrite($autoloadFile, $fileHead);
 
-        self::dumpautoloadFolder($autoloadFile, __DIR__ . '/../vendor/blackfire/php-sdk/src/Blackfire');
-        self::dumpautoloadFolder($autoloadFile, __DIR__ . '/../vendor/composer/ca-bundle/src');
+        self::dumpautoloadFolder($autoloadFile, $vendorDir . '/blackfire/php-sdk/src/Blackfire');
+        self::dumpautoloadFolder($autoloadFile, $vendorDir . '/composer/ca-bundle/src');
 
     }
 
@@ -48,5 +54,21 @@ FILEHEAD;
                 fwrite($autoloadFile, "require_once '" . realpath($file->getPathname()) . "';" . PHP_EOL);
             }
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function activate(Composer $composer, IOInterface $io)
+    {
+        //Nothing to do here, only event subscribing.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getSubscribedEvents()
+    {
+        return [ScriptEvents::POST_AUTOLOAD_DUMP => 'dumpAutoload'];
     }
 }

@@ -1,10 +1,11 @@
 {
     "name": "jaapio/phpbench-blackfire",
     "description": "Blackfire executor for phpbench",
-    "type": "library",
+    "type": "composer-plugin",
     "require": {
         "phpbench/phpbench": "^0.17.0",
-        "blackfire/php-sdk": "^1.21"
+        "blackfire/php-sdk": "^1.21",
+        "composer-plugin-api": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -21,5 +22,8 @@
     "scripts": {
         "post-update-cmd":  "Jaapio\\Blackfire\\Installer::dumpAutoload",
         "post-install-cmd": "Jaapio\\Blackfire\\Installer::dumpAutoload"
+    },
+    "require-dev": {
+        "composer/composer": "^1.9"
     }
 }
