@@ -44,8 +44,10 @@ final class Extension implements ExtensionInterface
         }, ['progress_logger' => ['name' => 'blackfire']]);
 
         $container->register('jaapio.blackfire.config', function (Container $container) {
-            $config = $container->getParameter('blackfire')['config'];
-            $env = $container->getParameter('blackfire')['env'];
+            $blackfireConfig = $container->getParameter('blackfire');
+
+            $config = $blackfireConfig['config'] ?? null;
+            $env = $blackfireConfig['env'] ?? null;
 
             $clientConfig = new ClientConfiguration();
             if ($config !== null) {
