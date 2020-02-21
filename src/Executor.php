@@ -52,7 +52,7 @@ final class Executor extends TemplateExecutor
                         return $assert;
                     }
 
-                    return ['expression' => $assert];
+                    return ['expression' => $assert, 'title' => null];
                 },
                 $config['assertions']
             );
