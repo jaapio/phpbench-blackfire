@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jaapio\Blackfire;
 
 use Blackfire\ClientConfiguration;
+use Jaapio\Blackfire\Environment\Provider\GithubAction;
 use PhpBench\DependencyInjection\Container;
 use PhpBench\DependencyInjection\ExtensionInterface;
 
@@ -58,6 +59,14 @@ final class Extension implements ExtensionInterface
 
             return $clientConfig;
         });
+
+        $container->register(
+            'jaapio.blackfire.environment.github',
+            function (Container $container) {
+                return new GithubAction();
+            },
+            ['environment_provider' => []]
+        );
     }
 
     /**
@@ -69,7 +78,7 @@ final class Extension implements ExtensionInterface
             'blackfire' => [
                 'config' => null,
                 'env' => null,
-            ]
+            ],
         ];
     }
 }

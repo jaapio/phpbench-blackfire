@@ -37,6 +37,11 @@ class Logger implements LoggerInterface
      */
     private $innerLogger;
 
+    /**
+     * @var Suite
+     */
+    private $suite;
+
     public function __construct(LoggerInterface $innerLogger, ClientConfiguration $clientConfiguration)
     {
         $this->blackfire = new Client($clientConfiguration);
@@ -105,18 +110,34 @@ class Logger implements LoggerInterface
      */
     public function iterationStart(Iteration $iteration)
     {
-        $this->scenario = $this->blackfire->startScenario($this->build, [
-            'title' => sprintf(
-                '%s::%s #%d',
-                    $iteration->getVariant()->getSubject()->getBenchmark()->getClass(),
-                    $iteration->getVariant()->getSubject()->getName(),
-                    $iteration->getIndex()
-            ),
-            'metadata' => [
-                'variant' => $iteration->getVariant()->getParameterSet()->getName(),
-                'iteration' => $iteration->getIndex(),
-            ]
-        ]);
+        $title = sprintf(
+            '%s::%s #%d',
+            $iteration->getVariant()->getSubject()->getBenchmark()->getClass(),
+            $iteration->getVariant()->getSubject()->getName(),
+            $iteration->getIndex()
+        );
+
+        $externalId = null;
+        $externalParentId = null;
+
+
+        if ($this->getExternalId() !== null) {
+            $externalId = sprintf('%s:%s', $this->getExternalId(), md5($title));
+            $externalParentId = sprintf('%s:%s', $this->getExternalParentId(), md5($title));
+        }
+
+        $this->scenario = $this->blackfire->startScenario(
+            $this->build,
+            array_filter([
+                'title' => $title,
+                'external_id' => $externalId,
+                'external_parent_id' => $externalParentId,
+                'metadata' => [
+                    'variant' => $iteration->getVariant()->getParameterSet()->getName(),
+                    'iteration' => $iteration->getIndex(),
+                ],
+            ])
+        );
 
         $this->innerLogger->iterationStart($iteration);
     }
@@ -134,7 +155,14 @@ class Logger implements LoggerInterface
      */
     public function startSuite(Suite $suite)
     {
-        $this->build = $this->blackfire->startBuild(null, ['title' => (string) $suite->getTag()]);
+        $this->suite = $suite;
+        $this->build = $this->blackfire->startBuild(
+            null,
+            array_filter([
+                'title' => (string) $suite->getTag(),
+                'external_id' => $this->getExternalId(),
+            ])
+        );
         $this->innerLogger->startSuite($suite);
     }
 
@@ -156,5 +184,25 @@ class Logger implements LoggerInterface
     public function getScenario() : Scenario
     {
         return $this->scenario;
+    }
+
+    private function getExternalId()
+    {
+        if (!array_key_exists('vcs', $this->suite->getEnvInformations())) {
+            return null;
+        }
+
+        $vcsEnv = $this->suite->getEnvInformations()['vcs'];
+        return $vcsEnv['version'];
+    }
+
+    private function getExternalParentId()
+    {
+        if (!array_key_exists('github', $this->suite->getEnvInformations())) {
+            return null;
+        }
+
+        $vcsEnv = $this->suite->getEnvInformations()['github'];
+        return $vcsEnv['pull_request']['base']['sha'];
     }
 }
