@@ -42,6 +42,11 @@ class Logger implements LoggerInterface
      */
     private $suite;
 
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
     public function __construct(LoggerInterface $innerLogger, ClientConfiguration $clientConfiguration)
     {
         $this->blackfire = new Client($clientConfiguration);
@@ -126,6 +131,8 @@ class Logger implements LoggerInterface
             $externalParentId = sprintf('%s:%s', $this->getExternalParentId(), md5($title));
         }
 
+        $this->output->writeln('Starting scenario with parent id ' . $externalParentId);
+
         $this->scenario = $this->blackfire->startScenario(
             $this->build,
             array_filter([
@@ -156,6 +163,8 @@ class Logger implements LoggerInterface
     public function startSuite(Suite $suite)
     {
         $this->suite = $suite;
+        $this->output->writeln('Starting build for ' . $this->getExternalId());
+
         $this->build = $this->blackfire->startBuild(
             null,
             array_filter([
@@ -178,6 +187,7 @@ class Logger implements LoggerInterface
 
     public function setOutput(OutputInterface $output)
     {
+        $this->output = $output;
         $this->innerLogger->setOutput($output);
     }
 
@@ -203,6 +213,6 @@ class Logger implements LoggerInterface
         }
 
         $vcsEnv = $this->suite->getEnvInformations()['github'];
-        return $vcsEnv['pull_request']['base']['sha'];
+        return $vcsEnv['pull_request_base_sha'];
     }
 }
