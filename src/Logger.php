@@ -128,10 +128,12 @@ class Logger implements LoggerInterface
 
         if ($this->getExternalId() !== null) {
             $externalId = sprintf('%s:%s', $this->getExternalId(), md5($title));
-            $externalParentId = sprintf('%s:%s', $this->getExternalParentId(), md5($title));
         }
 
-        $this->output->writeln('Starting scenario with parent id ' . $externalParentId);
+        if ($this->getExternalParentId() !== null) {
+            $externalParentId = sprintf('%s:%s', $this->getExternalParentId(), md5($title));
+            $this->output->writeln('Starting scenario with parent id ' . $externalParentId);
+        }
 
         $this->scenario = $this->blackfire->startScenario(
             $this->build,
