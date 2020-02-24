@@ -210,7 +210,7 @@ class Logger implements LoggerInterface
         return $vcsEnv !== null ? $vcsEnv['pull_request_base_sha'] : null;
     }
 
-    private function getGithubEnv(): ?array
+    private function getGithubEnv()
     {
         if (!array_key_exists('github', $this->suite->getEnvInformations())) {
             return null;
