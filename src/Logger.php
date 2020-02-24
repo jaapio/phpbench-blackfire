@@ -200,21 +200,22 @@ class Logger implements LoggerInterface
 
     private function getExternalId()
     {
-        if (!array_key_exists('vcs', $this->suite->getEnvInformations())) {
-            return null;
-        }
-
-        $vcsEnv = $this->suite->getEnvInformations()['vcs'];
-        return $vcsEnv['version'];
+        $vcsEnv = $this->getGithubEnv();
+        return $vcsEnv !== null ? $vcsEnv['pull_request_head_sha'] : null;
     }
 
     private function getExternalParentId()
+    {
+        $vcsEnv = $this->getGithubEnv();
+        return $vcsEnv !== null ? $vcsEnv['pull_request_base_sha'] : null;
+    }
+
+    private function getGithubEnv(): ?array
     {
         if (!array_key_exists('github', $this->suite->getEnvInformations())) {
             return null;
         }
 
-        $vcsEnv = $this->suite->getEnvInformations()['github'];
-        return $vcsEnv['pull_request_base_sha'];
+        return $this->suite->getEnvInformations()['github'];
     }
 }
