@@ -193,7 +193,7 @@ class Logger implements LoggerInterface
         $this->innerLogger->setOutput($output);
     }
 
-    public function getScenario() : Scenario
+    public function getScenario() : ?Scenario
     {
         return $this->scenario;
     }
