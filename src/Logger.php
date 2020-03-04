@@ -201,13 +201,13 @@ class Logger implements LoggerInterface
     private function getExternalId()
     {
         $vcsEnv = $this->getGithubEnv();
-        return $vcsEnv !== null ? $vcsEnv['pull_request_head_sha'] : null;
+        return $vcsEnv !== null ? $vcsEnv['head'] : null;
     }
 
     private function getExternalParentId()
     {
         $vcsEnv = $this->getGithubEnv();
-        return $vcsEnv !== null ? $vcsEnv['pull_request_base_sha'] : null;
+        return $vcsEnv !== null ? $vcsEnv['base'] : null;
     }
 
     private function getGithubEnv()

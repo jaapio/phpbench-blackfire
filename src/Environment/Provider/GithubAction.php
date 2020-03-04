@@ -15,7 +15,7 @@ final class GithubAction implements ProviderInterface
      */
     public function isApplicable()
     {
-        return getenv('GITHUB_EVENT_PATH') !== false;
+        return $this->isPush() || $this->isPullRequest();
     }
 
     /**
@@ -23,14 +23,52 @@ final class GithubAction implements ProviderInterface
      */
     public function getInformation()
     {
+        $head = null;
+        $base = null;
+
+        $event = $this->getEventData();
+
+        if ($this->isPush()) {
+            $head = $event['github']['after'];
+            $base = $event['github']['before'];
+        }
+
+        if ($this->isPullRequest()) {
+            $head = $event['github']['pull_request_head_sha'];
+            $base = $event['github']['pull_request_base_sha'];
+        }
+
         return new Information(
             'github',
-            json_decode(
-                file_get_contents(
-                    getenv('GITHUB_EVENT_PATH')
-                ),
-                true
-            )
+            [
+                'base' => $base,
+                'head' => $head,
+                'event' => $event
+            ]
         );
     }
+
+    private function isPullRequest() : bool
+    {
+        return getenv('GITHUB_EVENT_NAME') === 'pull_request';
+    }
+
+    private function isPush() : bool
+    {
+        return getenv('GITHUB_EVENT_NAME') === 'push';
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getEventData() : array
+    {
+        return json_decode(
+            file_get_contents(
+                getenv('GITHUB_EVENT_PATH')
+            ),
+            true
+        );
+    }
+
 }
