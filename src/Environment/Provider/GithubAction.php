@@ -29,13 +29,13 @@ final class GithubAction implements ProviderInterface
         $event = $this->getEventData();
 
         if ($this->isPush()) {
-            $head = $event['github']['after'];
-            $base = $event['github']['before'];
+            $head = $event['after'];
+            $base = $event['before'];
         }
 
         if ($this->isPullRequest()) {
-            $head = $event['github']['pull_request_head_sha'];
-            $base = $event['github']['pull_request_base_sha'];
+            $head = $event['pull_request_head_sha'];
+            $base = $event['pull_request_base_sha'];
         }
 
         return new Information(
