@@ -34,8 +34,8 @@ final class GithubAction implements ProviderInterface
         }
 
         if ($this->isPullRequest()) {
-            $head = $event['pull_request_head_sha'];
-            $base = $event['pull_request_base_sha'];
+            $head = $event['pull_request']['head']['sha'];
+            $base = $event['pull_request']['base']['sha'];
         }
 
         return new Information(
