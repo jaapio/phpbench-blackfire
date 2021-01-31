@@ -5,7 +5,7 @@
     "require": {
         "phpbench/phpbench": "^0.17.0",
         "blackfire/php-sdk": "^1.21",
-        "composer-plugin-api": "^1.1"
+        "composer-plugin-api": "^1.1|^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -30,6 +30,6 @@
         "post-install-cmd": "Jaapio\\Blackfire\\Installer::dumpAutoload"
     },
     "require-dev": {
-        "composer/composer": "^1.9"
+        "composer/composer": "^1.9|^2.0"
     }
 }
